@@ -1,0 +1,66 @@
+name: Build Extension Artifacts
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+      - "release-*"
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: guac-ext-build-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build extension jars
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "8"
+          cache: maven
+
+      - name: Build modules
+        shell: bash
+        run: |
+          set -euo pipefail
+          for module in guacamole-auth-token guacamole-auth-file-token guacamole-display-watermark; do
+            mvn -B -ntp -f "$module/pom.xml" clean package -DskipTests
+          done
+
+      - name: Collect artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          find . -type f -path "*/target/*.jar" \
+            ! -name "*-sources.jar" \
+            ! -name "*-javadoc.jar" \
+            ! -name "original-*.jar" \
+            -exec cp {} dist/ \;
+          ls -lah dist
+
+      - name: Upload action artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: guacamole-extensions-${{ github.ref_name }}-${{ github.run_number }}
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Publish release assets on tag
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*
+          generate_release_notes: true
