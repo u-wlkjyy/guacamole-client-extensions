@@ -10,6 +10,9 @@ on:
   pull_request:
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 concurrency:
   group: guac-ext-build-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
