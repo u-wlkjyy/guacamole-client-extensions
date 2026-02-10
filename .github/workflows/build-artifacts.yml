@@ -34,9 +34,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          for module in guacamole-auth-token guacamole-auth-file-token guacamole-display-watermark; do
-            mvn -B -ntp -f "$module/pom.xml" clean package -DskipTests
-          done
+          mvn -B -ntp clean package -DskipTests
 
       - name: Collect artifacts
         shell: bash
