@@ -1,0 +1,11 @@
+{
+    "guacamoleVersion": "1.6.0",
+    "name": "Display Watermark",
+    "namespace": "display-watermark",
+    "css": [
+        "watermark.css"
+    ],
+    "js": [
+        "network-status.js"
+    ]
+}

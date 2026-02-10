@@ -1,0 +1,78 @@
+/* Network Status Widget */
+#network-status-widget {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    top: 10px;
+    right: 170px;
+    /* Moved left to avoid overlapping with Guacamole menu */
+    padding: 5px 10px;
+    border-radius: 20px;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    z-index: 20001;
+    /* Above watermark */
+    align-items: center;
+    gap: 8px;
+    pointer-events: none;
+    /* Make it pass-through */
+    transition: background-color 0.3s ease;
+}
+
+/* Only show when session is active */
+body.guac-session-active #network-status-widget {
+    display: flex;
+}
+
+#network-status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: gray;
+    transition: background-color 0.3s ease;
+}
+
+/* Status Colors */
+#network-status-widget.status-good #network-status-dot {
+    background-color: #2ecc71;
+    /* Green */
+    box-shadow: 0 0 5px #2ecc71;
+}
+
+#network-status-widget.status-fair #network-status-dot {
+    background-color: #f1c40f;
+    /* Yellow */
+    box-shadow: 0 0 5px #f1c40f;
+}
+
+#network-status-widget.status-poor #network-status-dot {
+    background-color: #e74c3c;
+    /* Red */
+    box-shadow: 0 0 5px #e74c3c;
+}
+
+/* Watermark Overlay */
+/* Only apply when session is active */
+body.guac-session-active::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 20000;
+
+    /* 
+       SVG Data URI for "CvmLab" 
+       - Rotated -30 degrees
+       - Grey color with low opacity (0.15) for subtlety
+       - 300x300 pattern size
+    */
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" transform="rotate(-30 150 150)" font-size="30" fill="rgba(150,150,150,0.15)" font-weight="bold" font-family="Arial, sans-serif">CvmLab</text></svg>');
+
+    background-repeat: repeat;
+    background-position: center;
+}

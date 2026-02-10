@@ -1,0 +1,8 @@
+{
+    "guacamoleVersion": "1.6.0",
+    "name": "Token Authentication",
+    "namespace": "token",
+    "authProviders": [
+        "org.apache.guacamole.auth.token.TokenAuthenticationProvider"
+    ]
+}
